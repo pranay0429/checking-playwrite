@@ -18,8 +18,8 @@ async def scrape_data(playwright):
     await page.goto(url)
 
     await page.wait_for_selector('[data-test^="Interview"][data-test$="Container"]')
-    await page.mouse.wheel(0, 3000)  # scroll to trigger JS
-    await page.wait_for_timeout(3000)
+    await page.mouse.wheel(0, 10000)  # scroll to trigger JS
+    await page.wait_for_timeout(10000)
 
     company_cards = await page.locator('[data-test^="Interview"][data-test$="Container"]').all()
 
