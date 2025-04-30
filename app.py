@@ -15,11 +15,15 @@ async def scrape_data(playwright):
     await page.set_viewport_size({"width": 1280, "height": 800})
 
     url = "https://www.glassdoor.co.in/Interview/Google-Project-Manager-Interview-Questions-EI_IE9079.0,6_KO7,22.htm"
-    await page.goto(url)
+    print("Navigating to page...")
+    await page.goto(url, wait_until='load')
+    print("Page loaded!")
 
-    await page.wait_for_selector('[data-test^="Interview"][data-test$="Container"]')
-    await page.mouse.wheel(0, 10000)  # scroll to trigger JS
-    await page.wait_for_timeout(10000)
+    print("Waiting for the interview containers...")
+    await page.wait_for_selector('[data-test^="Interview"][data-test$="Container"]', timeout=60000)
+    print("Interviews found!")
+    await page.mouse.wheel(0, 3000)  # scroll to trigger JS
+    await page.wait_for_timeout(3000)
 
     company_cards = await page.locator('[data-test^="Interview"][data-test$="Container"]').all()
 
