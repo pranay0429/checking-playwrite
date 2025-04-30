@@ -8,18 +8,21 @@ nest_asyncio.apply()  # PATCHES the loop
 app = Flask(__name__)
 
 async def scrape_data(playwright):
-    browser = await playwright.chromium.launch(headless=False)  # use headless=False for debugging
-    page = await browser.new_page()
+    browser = await playwright.chromium.launch(headless=True)
+    context = await browser.new_context(user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120 Safari/537.36")
+    page = await context.new_page()
 
-    url = "https://www.glassdoor.co.in/Interview/Google-Project-Manager-Interview-Questions-EI_IE9079.0,6_KO7,22_IP2.htm?filter.jobTitleFTS=Project+Manager"
+    await page.set_viewport_size({"width": 1280, "height": 800})
+
+    url = "https://www.glassdoor.co.in/Interview/Google-Project-Manager-Interview-Questions-EI_IE9079.0,6_KO7,22.htm"
     await page.goto(url)
 
-    # Wait longer to ensure content loads
-    await page.wait_for_timeout(5000)
+    await page.wait_for_selector('[data-test^="Interview"][data-test$="Container"]', timeout=10000)
+    await page.mouse.wheel(0, 3000)  # scroll to trigger JS
+    await page.wait_for_timeout(3000)
 
-    # Collect cards
     company_cards = await page.locator('[data-test^="Interview"][data-test$="Container"]').all()
-    print(company_cards)
+
     results = []
     for card in company_cards:
         try:
@@ -33,7 +36,6 @@ async def scrape_data(playwright):
     
     await browser.close()
     return results
-
 @app.route("/scrape", methods=["GET"])
 def scrape_route():
     try:
