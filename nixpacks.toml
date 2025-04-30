@@ -1,11 +1,18 @@
-[phases.setup]
-nixPkgs = ["bash"]
+[build]
+builder = "nixpacks"
 
-[phases.build]
-cmds = ["pip install -r requirements.txt"]
+[variables]
+PORT = "5000"
+
+[phases.setup]
+nixPkgs = ["python311", "bash"]
 
 [phases.install]
-cmds = ["bash ./postinstall.sh"]
+cmds = [
+  "pip install --upgrade pip",
+  "pip install -r requirements.txt",
+  "python -m playwright install"
+]
 
 [start]
 cmd = "python app.py"
