@@ -17,7 +17,7 @@ async def scrape_data(playwright):
     url = "https://www.glassdoor.co.in/Interview/Google-Project-Manager-Interview-Questions-EI_IE9079.0,6_KO7,22.htm"
     await page.goto(url)
 
-    await page.wait_for_selector('[data-test^="Interview"][data-test$="Container"]', timeout=10000)
+    await page.wait_for_selector('[data-test^="Interview"][data-test$="Container"]')
     await page.mouse.wheel(0, 3000)  # scroll to trigger JS
     await page.wait_for_timeout(3000)
 
